@@ -1,48 +1,38 @@
-# Workflow పేరు
 name: Build and Deploy
 
-# ఎప్పుడు trigger అవాలో
 on:
   push:
     branches:
-      - main        # main branch కి push చేసినప్పుడు మాత్రమే
+      - main
 
 jobs:
   build-and-deploy:
-    # ఏ OS లో run చేయాలో (GitHub వాళ్ళ server!)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      # Step 1: మీ code తీసుకోవడం
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 2: Node.js setup చేయడం
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # Step 3: Dependencies install చేయడం
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Tests run చేయడం
       - name: Run tests
         run: npm test
-        # ఇక్కడ fail అయితే → తర్వాత steps run అవ్వవు!
-        # Broken code deploy అవ్వదు! ✅
 
-      # Step 5: Docker Hub లో login చేయడం
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 6: Docker image build చేసి push చేయడం
       - name: Build and Push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
