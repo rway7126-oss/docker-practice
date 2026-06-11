@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 5s      # ప్రతి 5 seconds కి data తీసుకుంటుంది
+
+scrape_configs:
+  # మన app నుండి metrics తీసుకోవడం
+  - job_name: 'todo-app'
+    static_configs:
+      - targets: ['app:3000']    # app container నుండి
+    metrics_path: '/metrics'     # ఈ route నుండి
+
+  # Prometheus తనను తాను monitor చేసుకోవడం
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
